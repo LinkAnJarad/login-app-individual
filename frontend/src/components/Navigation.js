@@ -3,13 +3,14 @@ import { MagnifyingGlassIcon, ChevronDownIcon, ChevronRightIcon } from '@heroico
 import { navigationAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
-function Navigation() {
+function Navigation({ onSubmoduleSelect }) {
   const { theme } = useAuth();
   const [navigation, setNavigation] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSystems, setExpandedSystems] = useState(new Set());
   const [expandedModules, setExpandedModules] = useState(new Set());
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedSubmoduleId, setSelectedSubmoduleId] = useState(null);
 
   useEffect(() => {
     fetchNavigation();
@@ -89,6 +90,14 @@ function Navigation() {
       newExpanded.add(moduleId);
     }
     setExpandedModules(newExpanded);
+  };
+
+  const handleSubmoduleClick = (submodule, module, system) => {
+    setSelectedSubmoduleId(submodule.id);
+    if (onSubmoduleSelect) {
+      onSubmoduleSelect(submodule, module, system);
+    }
+    console.log('Navigate to:', submodule.route || submodule.name);
   };
 
   const getIconComponent = (iconName) => {
@@ -185,14 +194,16 @@ function Navigation() {
                             {module.submodules.map((submodule) => (
                               <button
                                 key={submodule.id}
-                                onClick={() => {
-                                  // Handle submodule click (navigation would go here)
-                                  console.log('Navigate to:', submodule.route || submodule.name);
-                                }}
-                                className="w-full flex items-center p-2 text-left hover:bg-gray-50 rounded-md transition-colors-custom"
+                                onClick={() => handleSubmoduleClick(submodule, module, system)}
+                                className={`w-full flex items-center p-2 text-left rounded-md transition-colors-custom ${
+                                  selectedSubmoduleId === submodule.id 
+                                    ? 'font-medium' 
+                                    : 'hover:bg-gray-50'
+                                }`}
                                 style={{ 
                                   '--tw-bg-opacity': 0.1,
-                                  color: theme.primaryColor
+                                  color: selectedSubmoduleId === submodule.id ? theme.primaryColor : theme.primaryColor,
+                                  backgroundColor: selectedSubmoduleId === submodule.id ? `${theme.primaryColor}20` : 'transparent'
                                 }}
                               >
                                 <span className="text-sm">{submodule.name}</span>
