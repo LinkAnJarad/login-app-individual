@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { navigationAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
 function Navigation() {
   const [navigation, setNavigation] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSystems, setExpandedSystems] = useState(new Set());
+  const [expandedModules, setExpandedModules] = useState(new Set());
 
   useEffect(() => {
     fetchNavigation();
@@ -40,74 +41,156 @@ function Navigation() {
     try {
       const response = await navigationAPI.searchNavigation(searchQuery);
       setNavigation(response.data);
+      // Auto-expand all when searching
+      const systemIds = new Set();
+      const moduleIds = new Set();
+      response.data.forEach(system => {
+        systemIds.add(system.id);
+        system.modules.forEach(module => {
+          moduleIds.add(`${system.id}-${module.id}`);
+        });
+      });
+      setExpandedSystems(systemIds);
+      setExpandedModules(moduleIds);
     } catch (error) {
       console.error('Failed to search navigation:', error);
     }
   };
 
-  // Flatten all navigation items into a single list
-  const flattenNavigation = (navItems) => {
-    const flattened = [];
-    
-    navItems.forEach(system => {
-      system.modules.forEach(module => {
-        module.submodules.forEach(submodule => {
-          flattened.push({
-            id: submodule.id,
-            name: submodule.name,
-            route: submodule.route,
-            systemName: system.name,
-            moduleName: module.name
-          });
-        });
+  const toggleSystem = (systemId) => {
+    const newExpanded = new Set(expandedSystems);
+    if (newExpanded.has(systemId)) {
+      newExpanded.delete(systemId);
+      // Also collapse all modules in this system
+      const newExpandedModules = new Set(expandedModules);
+      navigation.find(s => s.id === systemId)?.modules.forEach(module => {
+        newExpandedModules.delete(`${systemId}-${module.id}`);
       });
-    });
-    
-    return flattened;
+      setExpandedModules(newExpandedModules);
+    } else {
+      newExpanded.add(systemId);
+    }
+    setExpandedSystems(newExpanded);
   };
 
-  const flatNavigation = flattenNavigation(navigation);
+  const toggleModule = (systemId, moduleId) => {
+    const newExpanded = new Set(expandedModules);
+    const key = `${systemId}-${moduleId}`;
+    if (newExpanded.has(key)) {
+      newExpanded.delete(key);
+    } else {
+      newExpanded.add(key);
+    }
+    setExpandedModules(newExpanded);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setExpandedSystems(new Set());
+    setExpandedModules(new Set());
+  };
 
   return (
-    <div className="w-64 h-full bg-gray-900 border-r border-gray-800 flex flex-col">
-      {/* Search Section */}
-      <div className="p-4 border-b border-gray-800">
+    <div className="w-72 h-full bg-white border-r border-slate-200 flex flex-col">
+      {/* Header */}
+      <div className="border-b border-slate-200 p-4">
+        <h3 className="text-lg font-semibold text-slate-900 mb-3">Navigation</h3>
+        
+        {/* Search */}
         <div className="relative">
-          <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Search modules..."
+            className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Navigation List */}
+      {/* Navigation Content */}
       <div className="flex-1 overflow-y-auto">
-        {flatNavigation.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
-            {searchQuery ? 'No modules found' : 'No modules available'}
+        {navigation.length === 0 ? (
+          <div className="p-4 text-center text-slate-500 text-sm">
+            {searchQuery ? 'No matching modules found' : 'No modules available'}
           </div>
         ) : (
-          <div className="p-2">
-            {flatNavigation.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  console.log('Navigate to:', item.route || item.name);
-                }}
-                className="w-full text-left p-3 mb-1 hover:bg-gray-800 rounded-lg transition-colors text-gray-300 hover:text-white"
-              >
-                <div className="text-sm font-medium">{item.name}</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {item.systemName} → {item.moduleName}
-                </div>
-              </button>
+          <div className="p-3">
+            {navigation.map((system) => (
+              <div key={system.id} className="mb-3">
+                {/* System Level */}
+                <button
+                  onClick={() => toggleSystem(system.id)}
+                  className="w-full text-left p-3 hover:bg-slate-50 rounded-lg transition-colors border border-slate-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-slate-900">{system.name}</span>
+                    <span className="text-slate-400 text-sm">
+                      {expandedSystems.has(system.id) ? '−' : '+'}
+                    </span>
+                  </div>
+                </button>
+
+                {/* Modules Level */}
+                {expandedSystems.has(system.id) && (
+                  <div className="mt-2 ml-4 space-y-2">
+                    {system.modules.map((module) => (
+                      <div key={module.id}>
+                        <button
+                          onClick={() => toggleModule(system.id, module.id)}
+                          className="w-full text-left p-2 hover:bg-slate-50 rounded text-sm border border-slate-100"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-slate-700">{module.name}</span>
+                            <span className="text-slate-400 text-xs">
+                              {expandedModules.has(`${system.id}-${module.id}`) ? '−' : '+'}
+                            </span>
+                          </div>
+                        </button>
+
+                        {/* Submodules Level */}
+                        {expandedModules.has(`${system.id}-${module.id}`) && (
+                          <div className="mt-1 ml-4 space-y-1">
+                            {module.submodules.map((submodule) => (
+                              <button
+                                key={submodule.id}
+                                onClick={() => {
+                                  console.log('Navigate to:', submodule.route || submodule.name);
+                                }}
+                                className="w-full text-left p-2 hover:bg-blue-50 hover:text-blue-700 rounded text-sm text-slate-600 transition-colors"
+                              >
+                                {submodule.name}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
+      </div>
+
+      {/* Footer */}
+      <div className="border-t border-slate-200 p-3">
+        <div className="text-xs text-slate-500 text-center">
+          {navigation.reduce((total, system) => 
+            total + system.modules.reduce((moduleTotal, module) => 
+              moduleTotal + module.submodules.length, 0
+            ), 0
+          )} total modules
+        </div>
       </div>
     </div>
   );

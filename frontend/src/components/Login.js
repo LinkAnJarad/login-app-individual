@@ -225,16 +225,20 @@ function Login() {
               <p className="text-white/90 font-medium text-center text-sm mb-2 drop-shadow">Demo Credentials</p>
               <div className="space-y-1 text-xs text-white/80">
                 <p className="flex justify-between items-center">
-                  <span>Admin:</span>
-                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">admin / password</span>
+                  <span>NEURA ADMIN:</span>
+                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">neural_admin / quantum2024!</span>
                 </p>
                 <p className="flex justify-between items-center">
-                  <span>Green Admin:</span>
-                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">greenadmin / password</span>
+                  <span>NEURA:</span>
+                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">ai_researcher / neural_net_2024</span>
                 </p>
                 <p className="flex justify-between items-center">
-                  <span>Designer:</span>
-                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">designer / password</span>
+                  <span>QUANTUM:</span>
+                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">quantum_ceo / quantum_supremacy</span>
+                </p>
+                <p className="flex justify-between items-center">
+                  <span>NEXUS:</span>
+                  <span className="font-mono backdrop-blur bg-white/10 px-2 py-1 rounded">cyber_guardian / zero_trust_2024</span>
                 </p>
               </div>
             </div>

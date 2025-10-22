@@ -11,12 +11,28 @@ class SystemSeeder extends Seeder
     {
         $systems = [
             [
-                'name' => 'Administration',
-                'code' => 'ADMIN',
+                'name' => 'Neural Intelligence Platform',
+                'code' => 'NEURAL_AI',
             ],
             [
-                'name' => 'Customer Management',
-                'code' => 'CRM',
+                'name' => 'Cloud Infrastructure Management',
+                'code' => 'CLOUD_INFRA',
+            ],
+            [
+                'name' => 'Data Analytics Engine',
+                'code' => 'DATA_ANALYTICS',
+            ],
+            [
+                'name' => 'Global Commerce Platform',
+                'code' => 'COMMERCE',
+            ],
+            [
+                'name' => 'Quantum Computing Lab',
+                'code' => 'QUANTUM_LAB',
+            ],
+            [
+                'name' => 'Cybersecurity Command Center',
+                'code' => 'CYBER_SEC',
             ],
         ];
 

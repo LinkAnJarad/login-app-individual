@@ -86,10 +86,36 @@ docker-compose exec backend php artisan db:seed
 
 | Username | Password | Company | Access Level |
 |----------|----------|---------|--------------|
-| `admin` | `password` | Tech Innovations Inc. | Full access |
-| `jdoe` | `password` | Tech Innovations Inc. | Limited access |
-| `greenadmin` | `password` | Green Solutions Ltd. | Full access |
-| `designer` | `password` | Creative Designs Co. | Limited access |
+| `neural_admin` | `quantum2024!` | NeuraLink Technologies | Full access (Super Admin) |
+| `quantum_ceo` | `quantum_supremacy` | Quantum Dynamics Corp | Full access (Super Admin) |
+| `genesis_cto` | `innovation_2024` | Neural Genesis Labs | Full access (Super Admin) |
+| `ai_researcher` | `neural_net_2024` | NeuraLink Technologies | AI/ML Specialist access |
+| `ml_engineer` | `deep_learning` | NeuraLink Technologies | AI/ML Specialist access |
+| `ethics_lead` | `ai_ethics_2024` | NeuraLink Technologies | Ethics & Compliance access |
+| `quantum_physicist` | `entanglement_2024` | Quantum Dynamics Corp | Quantum Computing access |
+| `algorithm_dev` | `superposition` | Quantum Dynamics Corp | Quantum Computing access |
+| `cloud_architect` | `kubernetes_master` | Infinity Cloud Systems | Cloud Infrastructure access |
+| `devops_ninja` | `terraform_deploy` | Infinity Cloud Systems | Cloud Infrastructure access |
+| `sre_lead` | `observability_2024` | Infinity Cloud Systems | Cloud Infrastructure access |
+| `serverless_dev` | `lambda_functions` | Infinity Cloud Systems | Cloud Infrastructure access |
+| `data_scientist` | `big_data_insights` | Neural Genesis Labs | AI/ML Specialist access |
+| `research_lead` | `matrix_research` | Neural Genesis Labs | Research & Analytics access |
+| `cyber_guardian` | `zero_trust_2024` | Cyber Nexus International | Cybersecurity access |
+| `threat_hunter` | `hunt_threats` | Cyber Nexus International | Cybersecurity access |
+| `commerce_mgr` | `global_trade_2024` | Cyber Nexus International | Commerce Platform access |
+| `forensic_expert` | `digital_evidence` | Cyber Nexus International | Cybersecurity access |
+| `crypto_specialist` | `blockchain_secure` | Cyber Nexus International | Commerce & Crypto access |
+
+**Access Level Descriptions:**
+- **Super Admin**: Full access to all systems and modules
+- **AI/ML Specialist**: Access to neural networks, machine learning, and data analytics
+- **Ethics & Compliance**: Access to AI ethics, bias detection, and compliance tools
+- **Quantum Computing**: Access to quantum algorithms, simulations, and circuits
+- **Cloud Infrastructure**: Access to Kubernetes, serverless, and monitoring tools
+- **Research & Analytics**: Access to data lakes, predictive analytics, and research tools
+- **Cybersecurity**: Access to threat intelligence, incident response, and zero trust
+- **Commerce & Crypto**: Access to marketplace, payments, and cryptocurrency features
+
 
 ## Presentation Notes
 
